@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 require './pomodoro'
 require './short_break'
 require './long_break'
 
+# ポモドーロタイマークラス
 class PomodoroExecuter
+  ONE_CYCLE_MINUTES = ((Pomodoro::MINUTES + Break::SHORT_MINUTES) * 4) + Break::LONG_MINUTES
   def initialize
     @pomodoro_count = 0
     @short_break_count = 0
@@ -12,17 +16,17 @@ class PomodoroExecuter
 
   def run
     loop do
-      pomodoro_cycle_with_logs   # 作業＋短い休憩を4回繰り返す
-      long_break_with_logs   # 長い休憩を1回
+      pomodoro_cycle_with_logs # 作業＋短い休憩を4回繰り返す
+      long_break_with_logs # 長い休憩を1回
       @four_pomodoro_cycle_count += 1
-      puts "4ポモドーロセット#{((Pomodoro::MINUTES + Break::SHORT_MINUTES) * 4 + Break::LONG_MINUTES) * @four_pomodoro_cycle_count}分経過"
+      puts "4ポモドーロセット#{ONE_CYCLE_MINUTES * @four_pomodoro_cycle_count}分経過"
     end
   end
 
   private
 
   def pomodoro_cycle_with_logs
-    4.times do |i|    # 作業＋短い休憩の流れを4回繰り返す
+    4.times do |i| # 作業＋短い休憩の流れを4回繰り返す
       pomodoro_with_logs
       short_break_with_logs
       i += 1
@@ -30,25 +34,27 @@ class PomodoroExecuter
     end
   end
 
-  def pomodoro_with_logs   # 25分タイマー
+  # 25分タイマー
+  def pomodoro_with_logs
     @pomodoro_count += 1
     puts "ポモドーロ#{@pomodoro_count}回目スタート"
     Pomodoro.new.run
     puts "ポモドーロ#{@pomodoro_count}回目終了(#{Pomodoro::MINUTES * @pomodoro_count}分経過)"
   end
 
-  def short_break_with_logs   # 5分休憩タイマー
+  # 5分休憩タイマー
+  def short_break_with_logs
     @short_break_count += 1
     puts "ショートブレイク#{@short_break_count}回目スタート"
     ShortBreak.new.run
     puts "ショートブレイク#{@short_break_count}回目終了(#{Break::SHORT_MINUTES * @short_break_count}分経過)"
   end
 
-  def long_break_with_logs   # 15分休憩タイマー
+  # 15分休憩タイマー
+  def long_break_with_logs
     @long_break_count += 1
     puts "ロングブレイク#{@long_break_count}回目スタート"
     LongBreak.new.run
     puts "ロングブレイク#{@long_break_count}回目終了(#{Break::LONG_MINUTES * @long_break_count}分経過)"
   end
-
 end
